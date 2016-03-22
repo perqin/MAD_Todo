@@ -47,4 +47,15 @@ namespace MAD_Todo.Utils
             return ((value as DateTimeOffset?) ?? DateTimeOffset.Now).DateTime;
         }
     }
+
+    //public class SelectedItemConverter : IValueConverter {
+    //    public object Convert(object value, Type targetType, object parameter, string language) {
+    //        int r = value as int? ?? -1;
+    //        if (r == -1) return 0 else return 
+    //    }
+
+    //    public object ConvertBack(object value, Type targetType, object parameter, string language) {
+    //        return ((value as DateTimeOffset?) ?? DateTimeOffset.Now).DateTime;
+    //    }
+    //}
 }

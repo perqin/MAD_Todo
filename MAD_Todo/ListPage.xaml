@@ -14,9 +14,7 @@
     </Page.Resources>
 
     <ListView
-        x:Name="TodoListView"
-        ItemsSource="{x:Bind TodoVM.Todos}"
-        Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" SelectionChanged="TodoListView_SelectionChanged" IsItemClickEnabled="True">
+        x:Name="TodoListView" ItemsSource="{x:Bind todoVM.Todos}" SelectedIndex="{x:Bind mainAdaptiveVM.SelectedItemIndex }" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" SelectionChanged="TodoListView_SelectionChanged" IsItemClickEnabled="True">
         <ListView.ItemTemplate>
             <DataTemplate x:DataType="vm:Todo">
                 <UserControl>

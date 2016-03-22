@@ -65,7 +65,22 @@ namespace MAD_Todo.ViewModels {
 
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
-        public MainAdaptiveViewModel() {
+        public static MainAdaptiveViewModel getInstance() {
+            if (instance == null) {
+                instance = new MainAdaptiveViewModel(); 
+            }
+            return instance;
+        }
+
+        private static MainAdaptiveViewModel instance = null;
+        private bool showNewButton = true;
+        private bool showBackButton = false;
+        private bool showSaveResetDeleteButton = false;
+        private bool showEditFrame = false;
+        private ScreenWidthEnum screenWidth = ScreenWidthEnum.Wide;
+        private int selectedItemIndex = -1;
+
+        private MainAdaptiveViewModel() {
             selectedItemIndex = -1;
             screenWidth = ScreenWidthEnum.Wide;
         }
@@ -84,13 +99,6 @@ namespace MAD_Todo.ViewModels {
                 SelectedItemIndex = ((int)j["SelectedItemIndex"].GetNumber());
             }
         }
-
-        private bool showNewButton = true;
-        private bool showBackButton = false;
-        private bool showSaveResetDeleteButton = false;
-        private bool showEditFrame = false;
-        private ScreenWidthEnum screenWidth = ScreenWidthEnum.Wide;
-        private int selectedItemIndex = -1;
 
         private void OnPropertyChanged([CallerMemberName] string propertyName = null) {
             PropertyChanged(this, new PropertyChangedEventArgs(propertyName));

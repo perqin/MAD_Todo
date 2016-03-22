@@ -11,22 +11,20 @@ using Windows.UI.Xaml.Navigation;
 
 namespace MAD_Todo {
     public sealed partial class MainPage : Page {
-        private MainAdaptiveViewModel mainAdaptiveVM;
 
         public MainPage() {
             this.InitializeComponent();
-            mainAdaptiveVM = new MainAdaptiveViewModel();
             Application.Current.Resuming += App_Resuming;
             Application.Current.Suspending += App_Suspending;
             ApplicationView.GetForCurrentView().SetPreferredMinSize(new Size(360, 120));
             SystemNavigationManager.GetForCurrentView().BackRequested += App_BackRequested;
             // Bind view adapter
-            mainAdaptiveVM.PropertyChanged += MainAdaptiveVM_PropertyChanged;
+            MainAdaptiveViewModel.getInstance().PropertyChanged += MainAdaptiveVM_PropertyChanged;
         }
 
         private void MainAdaptiveVM_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
             // Bind back button
-            SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = mainAdaptiveVM.ShowBackButton
+            SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = MainAdaptiveViewModel.getInstance().ShowBackButton
                 ? AppViewBackButtonVisibility.Visible : AppViewBackButtonVisibility.Collapsed;
             // Pass data to EditPage
             if (e.PropertyName == "SelectedItemIndex") {
@@ -51,7 +49,7 @@ namespace MAD_Todo {
                 JsonObject parameters = JsonObject.Parse(ne.Parameter as string);
                 if (parameters != null) {
                     if (parameters.ContainsKey("MainAdaptiveState"))
-                        mainAdaptiveVM.FromString(parameters["MainAdaptiveState"].GetString());
+                        MainAdaptiveViewModel.getInstance().FromString(parameters["MainAdaptiveState"].GetString());
                 }
                 EditFrame.Navigate(typeof(EditPage), ne.Parameter);
             };
@@ -59,22 +57,22 @@ namespace MAD_Todo {
 
         private void App_Resuming(object sender, object e) {
             // Restore view states
-            mainAdaptiveVM.FromString(ApplicationData.Current.LocalSettings.Values["MainAdaptiveState"] as string);
+            MainAdaptiveViewModel.getInstance().FromString(ApplicationData.Current.LocalSettings.Values["MainAdaptiveState"] as string);
         }
 
         private void App_Suspending(object sender, SuspendingEventArgs e) {
             // Store Todo list to storage
             TodoViewModel.getInstance().SaveToStorage();
             // Store view states
-            ApplicationData.Current.LocalSettings.Values["MainAdaptiveState"] = mainAdaptiveVM.ToString();
+            ApplicationData.Current.LocalSettings.Values["MainAdaptiveState"] = MainAdaptiveViewModel.getInstance().ToString();
         }
 
         private void GoBack() {
-            mainAdaptiveVM.SelectedItemIndex = -1;
+            MainAdaptiveViewModel.getInstance().SelectedItemIndex = -1;
         }
 
         private void MainPage_SizeChanged(object sender, SizeChangedEventArgs e) {
-            mainAdaptiveVM.ScreenWidth = e.NewSize.Width > 720 ? ScreenWidthEnum.Wide : ScreenWidthEnum.Narrow;
+            MainAdaptiveViewModel.getInstance().ScreenWidth = e.NewSize.Width > 720 ? ScreenWidthEnum.Wide : ScreenWidthEnum.Narrow;
         }
 
         public void OnTodoItemClick(object sender, ItemClickEventArgs e) {
@@ -92,7 +90,7 @@ namespace MAD_Todo {
         }
 
         public void OnSelectionChanged(int index) {
-            mainAdaptiveVM.SelectedItemIndex = index;
+            MainAdaptiveViewModel.getInstance().SelectedItemIndex = index;
         }
 
         private void AddButton_Click(object sender, RoutedEventArgs e) {
@@ -116,14 +114,14 @@ namespace MAD_Todo {
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e) {
-            TodoViewModel.getInstance().Todos[mainAdaptiveVM.SelectedItemIndex].CloneFrom((EditFrame.Content as EditPage).DisplayTodo);
-            if (mainAdaptiveVM.ScreenWidth == ScreenWidthEnum.Narrow) {
+            TodoViewModel.getInstance().Todos[MainAdaptiveViewModel.getInstance().SelectedItemIndex].CloneFrom((EditFrame.Content as EditPage).DisplayTodo);
+            if (MainAdaptiveViewModel.getInstance().ScreenWidth == ScreenWidthEnum.Narrow) {
                 GoBack();
             }
         }
 
         private void ResetButton_Click(object sender, RoutedEventArgs e) {
-            (EditFrame.Content as EditPage).ChangeEditingTodoData(TodoViewModel.getInstance().Todos[mainAdaptiveVM.SelectedItemIndex]);
+            (EditFrame.Content as EditPage).ChangeEditingTodoData(TodoViewModel.getInstance().Todos[MainAdaptiveViewModel.getInstance().SelectedItemIndex]);
         }
 
         private void DeleteButton_Click(object sender, RoutedEventArgs e) {

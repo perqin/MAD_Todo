@@ -7,7 +7,8 @@ namespace MAD_Todo {
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
     public sealed partial class ListPage : Page {
-        private TodoViewModel TodoVM;
+        private TodoViewModel todoVM;
+        private MainAdaptiveViewModel MainAdaptiveVM;
 
         public int SelectedItemIndex {
             get {
@@ -27,7 +28,8 @@ namespace MAD_Todo {
 
         public ListPage() {
             InitializeComponent();
-            TodoVM = TodoViewModel.getInstance();
+            todoVM = TodoViewModel.getInstance();
+            MainAdaptiveVM = MainAdaptiveViewModel.getInstance();
         }
 
         private void TodoListView_SelectionChanged(object sender, SelectionChangedEventArgs e) {
