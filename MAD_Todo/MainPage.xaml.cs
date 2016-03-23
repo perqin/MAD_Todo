@@ -11,9 +11,11 @@ using Windows.UI.Xaml.Navigation;
 
 namespace MAD_Todo {
     public sealed partial class MainPage : Page {
+        private MainAdaptiveViewModel MainAdaptiveVM;
 
         public MainPage() {
-            this.InitializeComponent();
+            InitializeComponent();
+            MainAdaptiveVM = MainAdaptiveViewModel.getInstance();
             Application.Current.Resuming += App_Resuming;
             Application.Current.Suspending += App_Suspending;
             ApplicationView.GetForCurrentView().SetPreferredMinSize(new Size(360, 120));
@@ -28,13 +30,13 @@ namespace MAD_Todo {
                 ? AppViewBackButtonVisibility.Visible : AppViewBackButtonVisibility.Collapsed;
             // Pass data to EditPage
             if (e.PropertyName == "SelectedItemIndex") {
-                ListPage listPage = ListFrame.Content as ListPage;
-                if (listPage != null && listPage.SelectedItemIndex != (sender as MainAdaptiveViewModel).SelectedItemIndex) {
-                    listPage.SelectedItemIndex = (sender as MainAdaptiveViewModel).SelectedItemIndex;
-                }
                 EditPage editPage = EditFrame.Content as EditPage;
-                if (editPage != null && listPage.SelectedItemIndex != -1) {
-                    editPage.ChangeEditingTodoData(TodoViewModel.getInstance().Todos[(sender as MainAdaptiveViewModel).SelectedItemIndex]);
+                if (editPage != null) {
+                    if (MainAdaptiveViewModel.getInstance().SelectedItemIndex != -1) {
+                        editPage.ChangeEditingTodoData(TodoViewModel.getInstance().Todos[(sender as MainAdaptiveViewModel).SelectedItemIndex]);
+                    } else {
+                        editPage.ChangeEditingTodoData(null);
+                    }
                 }
             }
         }
@@ -73,24 +75,6 @@ namespace MAD_Todo {
 
         private void MainPage_SizeChanged(object sender, SizeChangedEventArgs e) {
             MainAdaptiveViewModel.getInstance().ScreenWidth = e.NewSize.Width > 720 ? ScreenWidthEnum.Wide : ScreenWidthEnum.Narrow;
-        }
-
-        public void OnTodoItemClick(object sender, ItemClickEventArgs e) {
-            /*selectedItem = e.ClickedItem as Todo;
-            selectedItemIndex = TodoViewModel.getInstance().Todos.IndexOf(selectedItem);
-
-            Frame rootFrame = Window.Current.Content as Frame;
-            Grid.SetColumn(EditFrame, rootFrame.ActualWidth > 720 ? 1 : 0);
-            EditFrame.Visibility = Visibility.Visible;
-
-            EditPage editPage = EditFrame.Content as EditPage;
-            editPage.UpdateView(e.ClickedItem as Todo);
-
-            mainAdaptiveVM.SelectedItemIndex = selectedItemIndex;*/
-        }
-
-        public void OnSelectionChanged(int index) {
-            MainAdaptiveViewModel.getInstance().SelectedItemIndex = index;
         }
 
         private void AddButton_Click(object sender, RoutedEventArgs e) {

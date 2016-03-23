@@ -15,10 +15,10 @@
             <CommandBar.Content>
                 <Grid/>
             </CommandBar.Content>
-            <AppBarButton x:Name="AddButton" Icon="Add" Label="Add" Click="AddButton_Click" Visibility="{x:Bind mainAdaptiveVM.ShowNewButton,Mode=OneWay,Converter={StaticResource B2VConverter}}"/>
-            <AppBarButton x:Name="SaveButton" Icon="Save" Label="Save" Click="SaveButton_Click" Visibility="{x:Bind mainAdaptiveVM.ShowSaveResetDeleteButton,Mode=OneWay,Converter={StaticResource B2VConverter}}"/>
-            <AppBarButton x:Name="ResetButton" Icon="Undo" Label="Reset" Click="ResetButton_Click" Visibility="{x:Bind mainAdaptiveVM.ShowSaveResetDeleteButton,Mode=OneWay,Converter={StaticResource B2VConverter}}"/>
-            <AppBarButton x:Name="DeleteButton" Icon="Delete" Label="Delete" Click="DeleteButton_Click" Visibility="{x:Bind mainAdaptiveVM.ShowSaveResetDeleteButton,Mode=OneWay,Converter={StaticResource B2VConverter}}"/>
+            <AppBarButton x:Name="AddButton" Icon="Add" Label="Add" Click="AddButton_Click" Visibility="{x:Bind MainAdaptiveVM.ShowNewButton,Mode=OneWay,Converter={StaticResource B2VConverter}}"/>
+            <AppBarButton x:Name="SaveButton" Icon="Save" Label="Save" Click="SaveButton_Click" Visibility="{x:Bind MainAdaptiveVM.ShowSaveResetDeleteButton,Mode=OneWay,Converter={StaticResource B2VConverter}}"/>
+            <AppBarButton x:Name="ResetButton" Icon="Undo" Label="Reset" Click="ResetButton_Click" Visibility="{x:Bind MainAdaptiveVM.ShowSaveResetDeleteButton,Mode=OneWay,Converter={StaticResource B2VConverter}}"/>
+            <AppBarButton x:Name="DeleteButton" Icon="Delete" Label="Delete" Click="DeleteButton_Click" Visibility="{x:Bind MainAdaptiveVM.ShowSaveResetDeleteButton,Mode=OneWay,Converter={StaticResource B2VConverter}}"/>
         </CommandBar>
     </Page.BottomAppBar>
 
@@ -54,7 +54,7 @@
             x:Name="ListFrame"
             Grid.Row="1" Grid.Column="0"/>
         <Frame
-            x:Name="EditFrame" Visibility="{x:Bind mainAdaptiveVM.ShowEditFrame,Mode=OneWay,Converter={StaticResource B2VConverter}}"
+            x:Name="EditFrame" Visibility="{x:Bind MainAdaptiveVM.ShowEditFrame,Mode=OneWay,Converter={StaticResource B2VConverter}}"
             Grid.Row="1" Grid.Column="0"/>
     </Grid>
 </Page>

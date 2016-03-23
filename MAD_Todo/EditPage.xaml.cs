@@ -42,12 +42,12 @@ namespace MAD_Todo {
             //TODO: Remove old image file
             displayTodo = new Todo(false);
             //TODO: Copy new file from passed todo id
-            displayTodo.Title = todo.Title;
-            displayTodo.Detail = todo.Detail;
-            displayTodo.DueDate = todo.DueDate;
-            displayTodo.Done = todo.Done;
-            displayTodo.CoverImageExt = todo.CoverImageExt;
-            displayTodo.CoverSource = todo.CoverSource;
+            displayTodo.Title = todo == null ? "" : todo.Title;
+            displayTodo.Detail = todo == null ? "" : todo.Detail;
+            displayTodo.DueDate = todo == null ? DateTime.Today : todo.DueDate;
+            displayTodo.Done = todo == null ? false : todo.Done;
+            displayTodo.CoverImageExt = todo == null ? "" : todo.CoverImageExt;
+            displayTodo.CoverSource = todo == null ? null : todo.CoverSource;
         }
 
         private async void SelectCoverButton_Click(object sender, RoutedEventArgs e) {
