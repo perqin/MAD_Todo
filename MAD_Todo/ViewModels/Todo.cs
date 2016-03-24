@@ -163,6 +163,10 @@ namespace MAD_Todo.ViewModels {
             return _instance;
         }
 
+        public Todo GetTodoOfIndex(int index) {
+            return index >= 0 && index < Todos.Count ? Todos[index] : null;
+        }
+
         public void SaveToStorage() {
             //TODO: ---Save to storage
             //FIXME: Do nothing, since local storage has not been implemented.

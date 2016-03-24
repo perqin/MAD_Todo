@@ -18,6 +18,7 @@
             <AppBarButton x:Name="AddButton" Icon="Add" Label="Add" Click="AddButton_Click" Visibility="{x:Bind MainAdaptiveVM.ShowNewButton,Mode=OneWay,Converter={StaticResource B2VConverter}}"/>
             <AppBarButton x:Name="SaveButton" Icon="Save" Label="Save" Click="SaveButton_Click" Visibility="{x:Bind MainAdaptiveVM.ShowSaveResetDeleteButton,Mode=OneWay,Converter={StaticResource B2VConverter}}"/>
             <AppBarButton x:Name="ResetButton" Icon="Undo" Label="Reset" Click="ResetButton_Click" Visibility="{x:Bind MainAdaptiveVM.ShowSaveResetDeleteButton,Mode=OneWay,Converter={StaticResource B2VConverter}}"/>
+            <AppBarButton x:Name="ShareButton" Icon="Send" Label="Share" Click="ShareButton_Click" Visibility="{x:Bind MainAdaptiveVM.ShowSaveResetDeleteButton,Mode=OneWay,Converter={StaticResource B2VConverter}}"/>
             <AppBarButton x:Name="DeleteButton" Icon="Delete" Label="Delete" Click="DeleteButton_Click" Visibility="{x:Bind MainAdaptiveVM.ShowSaveResetDeleteButton,Mode=OneWay,Converter={StaticResource B2VConverter}}"/>
         </CommandBar>
     </Page.BottomAppBar>
@@ -49,7 +50,7 @@
         <TextBlock
             Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
             HorizontalAlignment="Left" d:LayoutOverrides="Height"
-            TextWrapping="Wrap" Text="Todos" Style="{StaticResource HeaderTextBlockStyle}" Margin="0,16"/>
+            TextWrapping="Wrap" Text="Todos" Style="{StaticResource HeaderTextBlockStyle}" Margin="8,16"/>
         <Frame
             x:Name="ListFrame"
             Grid.Row="1" Grid.Column="0"/>

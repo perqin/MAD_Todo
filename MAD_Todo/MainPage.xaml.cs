@@ -1,5 +1,6 @@
 ﻿using MAD_Todo.ViewModels;
 using Windows.ApplicationModel;
+using Windows.ApplicationModel.DataTransfer;
 using Windows.Data.Json;
 using Windows.Foundation;
 using Windows.Storage;
@@ -20,8 +21,20 @@ namespace MAD_Todo {
             Application.Current.Suspending += App_Suspending;
             ApplicationView.GetForCurrentView().SetPreferredMinSize(new Size(360, 120));
             SystemNavigationManager.GetForCurrentView().BackRequested += App_BackRequested;
+            DataTransferManager.GetForCurrentView().DataRequested += MainPage_DataRequested;
             // Bind view adapter
             MainAdaptiveViewModel.getInstance().PropertyChanged += MainAdaptiveVM_PropertyChanged;
+        }
+
+        private void MainPage_DataRequested(DataTransferManager sender, DataRequestedEventArgs args) {
+            DataRequest request = args.Request;
+            Todo shared = TodoViewModel.getInstance().GetTodoOfIndex(MainAdaptiveViewModel.getInstance().SelectedItemIndex);
+            if (shared == null) {
+                request.FailWithDisplayText("You have not selected any todo item");
+            } else {
+                request.Data.Properties.Title = "Todo: " + shared.Title;
+                request.Data.SetText(shared.Detail);
+            }
         }
 
         private void MainAdaptiveVM_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
@@ -118,6 +131,10 @@ namespace MAD_Todo {
             {
                 TodoViewModel.getInstance().Todos.RemoveAt(selectedItemIndex);
             }*/
+        }
+
+        private void ShareButton_Click(object sender, RoutedEventArgs e) {
+            DataTransferManager.ShowShareUI();
         }
     }
 }
