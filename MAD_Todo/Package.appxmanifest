@@ -32,7 +32,7 @@
       Executable="$targetnametoken$.exe"
       EntryPoint="MAD_Todo.App">
       <uap:VisualElements
-        DisplayName="MAD_Todo"
+        DisplayName="Mad Todos"
         Square150x150Logo="Assets\Square150x150Logo.png"
         Square44x44Logo="Assets\Square44x44Logo.png"
         Description="MAD_Todo"

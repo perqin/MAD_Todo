@@ -16,6 +16,7 @@
                 <Grid/>
             </CommandBar.Content>
             <AppBarButton x:Name="AddButton" Icon="Add" Label="Add" Click="AddButton_Click" Visibility="{x:Bind MainAdaptiveVM.ShowNewButton,Mode=OneWay,Converter={StaticResource B2VConverter}}"/>
+            <AppBarButton x:Name="UpdateTileButton" Icon="Refresh" Label="Update tile" Click="UpdateTileButton_Click" Visibility="{x:Bind MainAdaptiveVM.ShowNewButton,Mode=OneWay,Converter={StaticResource B2VConverter}}"/>
             <AppBarButton x:Name="SaveButton" Icon="Save" Label="Save" Click="SaveButton_Click" Visibility="{x:Bind MainAdaptiveVM.ShowSaveResetDeleteButton,Mode=OneWay,Converter={StaticResource B2VConverter}}"/>
             <AppBarButton x:Name="ResetButton" Icon="Undo" Label="Reset" Click="ResetButton_Click" Visibility="{x:Bind MainAdaptiveVM.ShowSaveResetDeleteButton,Mode=OneWay,Converter={StaticResource B2VConverter}}"/>
             <AppBarButton x:Name="ShareButton" Icon="Send" Label="Share" Click="ShareButton_Click" Visibility="{x:Bind MainAdaptiveVM.ShowSaveResetDeleteButton,Mode=OneWay,Converter={StaticResource B2VConverter}}"/>

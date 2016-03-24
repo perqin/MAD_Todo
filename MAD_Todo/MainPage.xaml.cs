@@ -90,6 +90,10 @@ namespace MAD_Todo {
             MainAdaptiveViewModel.getInstance().ScreenWidth = e.NewSize.Width > 720 ? ScreenWidthEnum.Wide : ScreenWidthEnum.Narrow;
         }
 
+        private void UpdateTileButton_Click(object sender, RoutedEventArgs e) {
+            App.UpdateTile();
+        }
+
         private void AddButton_Click(object sender, RoutedEventArgs e) {
             // Prevent creating new Todo item, since local storage has not been implemented.
             return;

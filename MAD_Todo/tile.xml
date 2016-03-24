@@ -1,0 +1,16 @@
+﻿<tile>
+  <visual displayName="Mad Todos" branding="name">
+    <binding template="TileMedium">
+      <text hint-style="caption">__TITLE__</text>
+      <text hint-style="captionSubtle" hint-wrap="true" hint-maxLines="3">__DETAIL__</text>
+    </binding>
+    <binding template="TileWide">
+      <text hint-style="caption">__TITLE__</text>
+      <text hint-style="captionSubtle" hint-wrap="true" hint-maxLines="3">__DETAIL__</text>
+    </binding>
+    <binding template="TileLarge" branding="nameAndLogo">
+      <text hint-style="title">__TITLE__</text>
+      <text hint-style="titleSubtle" hint-wrap="true" hint-maxLines="3">__DETAIL__</text>
+    </binding>
+  </visual>
+</tile>

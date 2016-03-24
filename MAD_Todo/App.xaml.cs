@@ -3,7 +3,9 @@ using System;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Data.Json;
+using Windows.Data.Xml.Dom;
 using Windows.Storage;
+using Windows.UI.Notifications;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
@@ -13,6 +15,19 @@ namespace MAD_Todo {
     /// Provides application-specific behavior to supplement the default Application class.
     /// </summary>
     sealed partial class App : Application {
+        public static async void UpdateTile() {
+            Todo newestTodo = TodoViewModel.getInstance().GetTodoOfIndex(0);
+            Uri uri = new Uri("ms-appx:///Tile.xml");
+            StorageFile file = await StorageFile.GetFileFromApplicationUriAsync(uri);
+            XmlDocument xml = await XmlDocument.LoadFromFileAsync(file);
+            string rawXml = xml.GetXml()
+                .Replace("__TITLE__", newestTodo == null ? "" : newestTodo.Title)
+                .Replace("__DETAIL__", newestTodo == null ? "" : newestTodo.Detail);
+            xml.LoadXml(rawXml);
+            TileNotification notification = new TileNotification(xml);
+            TileUpdateManager.CreateTileUpdaterForApplication().Update(notification);
+        }
+
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
