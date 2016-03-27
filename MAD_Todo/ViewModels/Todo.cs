@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using Windows.Data.Json;
 using Windows.Foundation;
 using Windows.Storage;
@@ -22,15 +23,21 @@ namespace MAD_Todo.ViewModels {
 
         public void ReloadSource() {
             //TODO: Reload CoverSource using id and ext
-            StorageFolder localFolder = ApplicationData.Current.LocalFolder;
-            string fileName = ID + "." + CoverImageExt;
-            localFolder.GetFileAsync(fileName).Completed = new AsyncOperationCompletedHandler<StorageFile>((IAsyncOperation<StorageFile> o, AsyncStatus s) => {
-                if (s == AsyncStatus.Completed) {
-                    //TODO
-                }
-            });
-
+            //StorageFolder localFolder = ApplicationData.Current.LocalFolder;
+            //string fileName = ID + "." + CoverImageExt;
+            ////localFolder.GetFileAsync(fileName).Completed = new AsyncOperationCompletedHandler<StorageFile>((IAsyncOperation<StorageFile> o, AsyncStatus s) => {
+            ////    if (s == AsyncStatus.Completed) {
+            ////        //TODO
+            ////    }
+            ////});
+            //Task<StorageFile> task = localFolder.GetFileAsync(fileName).AsTask();
+            //task.ContinueWith(updateCoverSource, TaskContinuationOptions.OnlyOnRanToCompletion);
         }
+
+        //private StorageFile updateCoverSource(Task<StorageFile> arg) {
+        //    StorageFile sf = arg.Result;
+        //    return sf;
+        //}
 
         public string ID {
             get {
