@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Windows.Data.Json;
 using Windows.Foundation;
 using Windows.Storage;
+using Windows.Storage.Streams;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
@@ -21,23 +22,32 @@ namespace MAD_Todo.ViewModels {
         private string coverImageExt;
         private bool? done;
 
-        public void ReloadSource() {
+        public async void ReloadSource() {
             //TODO: Reload CoverSource using id and ext
+
             //StorageFolder localFolder = ApplicationData.Current.LocalFolder;
             //string fileName = ID + "." + CoverImageExt;
-            ////localFolder.GetFileAsync(fileName).Completed = new AsyncOperationCompletedHandler<StorageFile>((IAsyncOperation<StorageFile> o, AsyncStatus s) => {
-            ////    if (s == AsyncStatus.Completed) {
-            ////        //TODO
-            ////    }
-            ////});
+            //localFolder.GetFileAsync(fileName).Completed = new AsyncOperationCompletedHandler<StorageFile>((IAsyncOperation<StorageFile> o, AsyncStatus s) => {
+            //    if (s == AsyncStatus.Completed) {
+            //        //TODO
+            //    }
+            //});
             //Task<StorageFile> task = localFolder.GetFileAsync(fileName).AsTask();
             //task.ContinueWith(updateCoverSource, TaskContinuationOptions.OnlyOnRanToCompletion);
-        }
 
-        //private StorageFile updateCoverSource(Task<StorageFile> arg) {
-        //    StorageFile sf = arg.Result;
-        //    return sf;
-        //}
+            StorageFolder localFolder = ApplicationData.Current.LocalFolder;
+            string fileName = ID + "." + CoverImageExt;
+            StorageFile file = await localFolder.GetFileAsync(fileName);
+            if (file == null) {
+                StorageFile defaultFile = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/default.png"));
+                file = await defaultFile.CopyAsync(localFolder, fileName, NameCollisionOption.ReplaceExisting);
+            }
+            using (IRandomAccessStream fileStream = await file.OpenAsync(FileAccessMode.Read)) {
+                BitmapImage bitmapImage = new BitmapImage();
+                await bitmapImage.SetSourceAsync(fileStream);
+                CoverSource = bitmapImage;
+            }
+        }
 
         public string ID {
             get {
