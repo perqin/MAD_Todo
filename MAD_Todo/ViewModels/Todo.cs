@@ -1,13 +1,14 @@
-﻿using System;
+﻿using MAD_Todo.Utils;
+using SQLite.Net;
+using SQLite.Net.Attributes;
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
 using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 using Windows.Data.Json;
-using Windows.Foundation;
 using Windows.Storage;
 using Windows.Storage.Streams;
-using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 
@@ -23,24 +24,15 @@ namespace MAD_Todo.ViewModels {
         private bool? done;
 
         public async void ReloadSource() {
-            //TODO: Reload CoverSource using id and ext
-
-            //StorageFolder localFolder = ApplicationData.Current.LocalFolder;
-            //string fileName = ID + "." + CoverImageExt;
-            //localFolder.GetFileAsync(fileName).Completed = new AsyncOperationCompletedHandler<StorageFile>((IAsyncOperation<StorageFile> o, AsyncStatus s) => {
-            //    if (s == AsyncStatus.Completed) {
-            //        //TODO
-            //    }
-            //});
-            //Task<StorageFile> task = localFolder.GetFileAsync(fileName).AsTask();
-            //task.ContinueWith(updateCoverSource, TaskContinuationOptions.OnlyOnRanToCompletion);
-
             StorageFolder localFolder = ApplicationData.Current.LocalFolder;
+            StorageFile file;
             string fileName = ID + "." + CoverImageExt;
-            StorageFile file = await localFolder.GetFileAsync(fileName);
-            if (file == null) {
+            try {
+                file = await localFolder.GetFileAsync(fileName);
+            } catch (Exception e) {
                 StorageFile defaultFile = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/default.png"));
-                file = await defaultFile.CopyAsync(localFolder, fileName, NameCollisionOption.ReplaceExisting);
+                CoverImageExt = defaultFile.FileType;
+                file = await defaultFile.CopyAsync(localFolder, ID + "." + CoverImageExt, NameCollisionOption.ReplaceExisting);
             }
             using (IRandomAccessStream fileStream = await file.OpenAsync(FileAccessMode.Read)) {
                 BitmapImage bitmapImage = new BitmapImage();
@@ -49,6 +41,7 @@ namespace MAD_Todo.ViewModels {
             }
         }
 
+        [Column("_id"), MaxLength(64), PrimaryKey]
         public string ID {
             get {
                 return _id;
@@ -58,6 +51,8 @@ namespace MAD_Todo.ViewModels {
                 OnPropertyChanged();
             }
         }
+
+        [Column("title"), MaxLength(1024)]
         public string Title {
             get {
                 return title;
@@ -67,6 +62,8 @@ namespace MAD_Todo.ViewModels {
                 OnPropertyChanged();
             }
         }
+
+        [Column("detail"), MaxLength(1073741824)]
         public string Detail {
             get {
                 return detail;
@@ -76,6 +73,8 @@ namespace MAD_Todo.ViewModels {
                 OnPropertyChanged();
             }
         }
+
+        [Ignore]
         public DateTime DueDate {
             get {
                 return dueDate;
@@ -85,6 +84,8 @@ namespace MAD_Todo.ViewModels {
                 OnPropertyChanged();
             }
         }
+
+        [Ignore]
         public ImageSource CoverSource {
             get {
                 return coverSource;
@@ -94,6 +95,8 @@ namespace MAD_Todo.ViewModels {
                 OnPropertyChanged();
             }
         }
+
+        [Column("cover_image_ext"), MaxLength(16)]
         public string CoverImageExt {
             get {
                 return coverImageExt;
@@ -102,6 +105,8 @@ namespace MAD_Todo.ViewModels {
                 coverImageExt = value;
             }
         }
+
+        [Column("done")]
         public bool? Done {
             get {
                 return done;
@@ -112,16 +117,48 @@ namespace MAD_Todo.ViewModels {
             }
         }
 
-        public Todo(bool defaultProperties = true) {
+        /// <summary>
+        /// For SQLite attribute
+        /// </summary>
+        [Column("due_date"), MaxLength(16)]
+        public string DB_DueDate {
+            get {
+                return DueDate.ToString(C.YMD_FORMAT);
+            }
+            set {
+                DateTime dt;
+                if (DateTime.TryParseExact(value, C.YMD_FORMAT, null, DateTimeStyles.None, out dt)) {
+                    DueDate = dt;
+                } else {
+                    DueDate = new DateTime(1970, 1, 1);
+                }
+            }
+        }
+
+        public Todo() {
             _id = Guid.NewGuid().ToString();
-            if (defaultProperties) {
+            title = "";
+            detail = "";
+            done = false;
+            coverImageExt = "";
+            dueDate = new DateTime(1970, 1, 1);
+        }
+
+        public Todo(bool init) {
+            _id = Guid.NewGuid().ToString();
+            if (init) {
                 title = "New Todo";
                 detail = "Detail here...";
                 done = false;
-                //coverSource = new BitmapImage(new Uri("ms-appx://MAD_Todo/Assets/default.png"));
-                coverImageExt = "";
+                coverImageExt = "null";
                 dueDate = DateTime.Today;
                 ReloadSource();
+            } else {
+                title = "";
+                detail = "";
+                done = false;
+                coverImageExt = "";
+                dueDate = new DateTime(1970, 1, 1);
             }
         }
 
@@ -184,22 +221,58 @@ namespace MAD_Todo.ViewModels {
             return index >= 0 && index < Todos.Count ? Todos[index] : null;
         }
 
-        public void SaveToStorage() {
+        //public void SaveToStorage() {
             //TODO: ---Save to storage
             //FIXME: Do nothing, since local storage has not been implemented.
+        //}
+
+        public void AddTodo(Todo todo) {
+            Todos.Add(todo);
+            using (var connection = new SQLiteConnection(new SQLite.Net.Platform.WinRT.SQLitePlatformWinRT(), C.DB_PATH)) {
+                var cmd = connection.CreateCommand($"SELECT name FROM sqlite_master WHERE type='table' AND name='{typeof(Todo).Name}'");
+                if (cmd.ExecuteScalar<string>() == null) {
+                    connection.CreateTable<Todo>(SQLite.Net.Interop.CreateFlags.None);
+                }
+                int count = connection.InsertOrReplace(todo, typeof(Todo));
+            }
         }
 
         public void LoadFromStorage() {
-            //TODO: ---Load from storage
-            //FIXME: Create fake Todo items, since local storage has not been implemented.
-            _instance.addTodo(new Todo());
-            _instance.addTodo(new Todo());
-            _instance.addTodo(new Todo());
-            _instance.addTodo(new Todo());
+            using (var connection = new SQLiteConnection(new SQLite.Net.Platform.WinRT.SQLitePlatformWinRT(), C.DB_PATH)) {
+                var cmd = connection.CreateCommand($"SELECT name FROM sqlite_master WHERE type='table' AND name='{typeof(Todo).Name}'");
+                if (cmd.ExecuteScalar<string>() == null) {
+                    connection.CreateTable<Todo>(SQLite.Net.Interop.CreateFlags.None);
+                }
+                TableQuery<Todo> q = connection.Table<Todo>();
+                _instance.Todos.Clear();
+                for (int i = 0; i < q.Count(); ++i) {
+                    Todos.Add(q.ElementAt(i));
+                }
+            }
         }
 
-        public void addTodo(Todo todo) {
-            todos.Add(todo);
+        public void UpdateTodo(int index, Todo todo) {
+            string oid = Todos[index].ID;
+            Todos[index].CloneFrom(todo);
+            using (var connection = new SQLiteConnection(new SQLite.Net.Platform.WinRT.SQLitePlatformWinRT(), C.DB_PATH)) {
+                var cmd = connection.CreateCommand($"SELECT name FROM sqlite_master WHERE type='table' AND name='{typeof(Todo).Name}'");
+                if (cmd.ExecuteScalar<string>() == null) {
+                    connection.CreateTable<Todo>(SQLite.Net.Interop.CreateFlags.None);
+                }
+                int count = connection.Update(todo, typeof(Todo));
+            }
+        }
+
+        public void DeleteTodo(int index) {
+            string oid = Todos[index].ID;
+            Todos.RemoveAt(index);
+            using (var connection = new SQLiteConnection(new SQLite.Net.Platform.WinRT.SQLitePlatformWinRT(), C.DB_PATH)) {
+                var cmd = connection.CreateCommand($"SELECT name FROM sqlite_master WHERE type='table' AND name='{typeof(Todo).Name}'");
+                if (cmd.ExecuteScalar<string>() == null) {
+                    connection.CreateTable<Todo>(SQLite.Net.Interop.CreateFlags.None);
+                }
+                int count = connection.Delete<Todo>(oid);
+            }
         }
     }
 }

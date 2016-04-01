@@ -11,10 +11,7 @@
     <Page.Resources>
         <utils:DateTimeToOffsetConverter x:Key="DateTimeToOffsetConverter"/>
     </Page.Resources>
-
-    <ScrollViewer
-        Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-        VerticalScrollBarVisibility="Hidden">
+    <ScrollViewer Grid.Row="1" Grid.ColumnSpan="2" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" VerticalScrollBarVisibility="Hidden">
         <StackPanel Margin="16,0">
             <Image x:Name="CoverFullImage" Height="144" Stretch="UniformToFill" Source="{x:Bind displayTodo.CoverSource,Mode=OneWay}"/>
             <AppBarButton Icon="BrowsePhotos" Label="Select" HorizontalAlignment="Right" Click="SelectCoverButton_Click"/>

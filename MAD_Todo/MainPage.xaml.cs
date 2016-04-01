@@ -77,7 +77,8 @@ namespace MAD_Todo {
 
         private void App_Suspending(object sender, SuspendingEventArgs e) {
             // Store Todo list to storage
-            TodoViewModel.getInstance().SaveToStorage();
+            // Maybe it is better not do waste time here...
+            //TodoViewModel.getInstance().SaveToStorage();
             // Store view states
             ApplicationData.Current.LocalSettings.Values["MainAdaptiveState"] = MainAdaptiveViewModel.getInstance().ToString();
         }
@@ -95,27 +96,12 @@ namespace MAD_Todo {
         }
 
         private void AddButton_Click(object sender, RoutedEventArgs e) {
-            // Prevent creating new Todo item, since local storage has not been implemented.
-            return;
-            /*
-            TodoViewModel.getInstance().Todos.Add(new Todo());
-
-            selectedItemIndex = TodoViewModel.getInstance().Todos.Count - 1;
-            selectedItem = TodoViewModel.getInstance().Todos[selectedItemIndex];
-
-            ListPage listPage = ListFrame.Content as ListPage;
-            listPage.setSelected(selectedItemIndex);
-
-            //Frame rootFrame = Window.Current.Content as Frame;
-            //Grid.SetColumn(EditFrame, rootFrame.ActualWidth > 720 ? 1 : 0);
-            //EditFrame.Visibility = Visibility.Visible;
-
-            EditPage editPage = EditFrame.Content as EditPage;
-            editPage.UpdateView(selectedItem);*/
+            TodoViewModel.getInstance().AddTodo(new Todo(true));
+            MainAdaptiveViewModel.getInstance().SelectedItemIndex = TodoViewModel.getInstance().Todos.Count - 1;
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e) {
-            TodoViewModel.getInstance().Todos[MainAdaptiveViewModel.getInstance().SelectedItemIndex].CloneFrom((EditFrame.Content as EditPage).DisplayTodo);
+            TodoViewModel.getInstance().UpdateTodo(MainAdaptiveViewModel.getInstance().SelectedItemIndex, (EditFrame.Content as EditPage).DisplayTodo);
             if (MainAdaptiveViewModel.getInstance().ScreenWidth == ScreenWidthEnum.Narrow) {
                 GoBack();
             }

@@ -8,52 +8,61 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
-
     <Page.Resources>
         <utils:BooleanToVisibilityConverter x:Key="B2VConverter"/>
     </Page.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="1*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <TextBox x:Name="SearchTextBox" PlaceholderText="Search titile, detail or date..." VerticalAlignment="Center" MinHeight="0" Margin="8,0"/>
+        <AppBarButton HorizontalAlignment="Right" Icon="Zoom" VerticalAlignment="Center" d:LayoutOverrides="Width" Grid.Column="1" Height="48" Click="SearchButton_Click"/>
+        <ListView x:Name="TodoListView" ItemsSource="{x:Bind todoVM.Todos}" SelectedIndex="{x:Bind MainAdaptiveVM.SelectedItemIndex,Mode=TwoWay }" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" IsItemClickEnabled="True" Grid.Row="1" Grid.ColumnSpan="2">
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="vm:Todo">
+                    <UserControl>
+                        <Grid Height="72">
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CoverVisualStateGroup">
+                                    <VisualState x:Name="Narrow">
+                                        <VisualState.Setters>
+                                            <Setter Target="CoverSmallImage.Visibility" Value="Collapsed"/>
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                    <VisualState x:Name="Normal">
+                                        <VisualState.StateTriggers>
+                                            <AdaptiveTrigger MinWindowWidth="500"/>
+                                        </VisualState.StateTriggers>
 
-    <ListView
-        x:Name="TodoListView" ItemsSource="{x:Bind todoVM.Todos}" SelectedIndex="{x:Bind MainAdaptiveVM.SelectedItemIndex,Mode=TwoWay }" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" IsItemClickEnabled="True">
-        <ListView.ItemTemplate>
-            <DataTemplate x:DataType="vm:Todo">
-                <UserControl>
-                    <Grid Height="72">
-                        <VisualStateManager.VisualStateGroups>
-                            <VisualStateGroup x:Name="CoverVisualStateGroup">
-                                <VisualState x:Name="Narrow">
-                                    <VisualState.Setters>
-                                        <Setter Target="CoverSmallImage.Visibility" Value="Collapsed"/>
-                                    </VisualState.Setters>
-                                </VisualState>
-                                <VisualState x:Name="Normal">
-                                    <VisualState.StateTriggers>
-                                        <AdaptiveTrigger MinWindowWidth="500"/>
-                                    </VisualState.StateTriggers>
-
-                                </VisualState>
-                                <VisualState x:Name="Wide">
-                                    <VisualState.StateTriggers>
-                                        <AdaptiveTrigger MinWindowWidth="721"/>
-                                    </VisualState.StateTriggers>
-                                    <VisualState.Setters>
-                                        <Setter Target="CoverSmallImage.Width" Value="96"/>
-                                    </VisualState.Setters>
-                                </VisualState>
-                            </VisualStateGroup>
-                        </VisualStateManager.VisualStateGroups>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="32"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="1*"/>
-                        </Grid.ColumnDefinitions>
-                        <CheckBox IsChecked="{x:Bind Done,Mode=TwoWay}" Grid.Column="0" MinWidth="0" MinHeight="0" HorizontalAlignment="Center"/>
-                        <Image x:Name="CoverSmallImage" Source="{x:Bind CoverSource,Mode=OneWay}" Grid.Column="1" Width="84"/>
-                        <TextBlock Text="{x:Bind Title,Mode=OneWay}" Grid.Column="2" VerticalAlignment="Center" Margin="8,0"/>
-                        <Line Visibility="{x:Bind Done,Converter={StaticResource B2VConverter},Mode=OneWay}" Grid.Column="2" StrokeThickness="2" Stretch="Fill" VerticalAlignment="Center" Stroke="Black" X2="1" Margin="8,0"/>
-                    </Grid>
-                </UserControl>
-            </DataTemplate>
-        </ListView.ItemTemplate>
-    </ListView>
+                                    </VisualState>
+                                    <VisualState x:Name="Wide">
+                                        <VisualState.StateTriggers>
+                                            <AdaptiveTrigger MinWindowWidth="721"/>
+                                        </VisualState.StateTriggers>
+                                        <VisualState.Setters>
+                                            <Setter Target="CoverSmallImage.Width" Value="96"/>
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="32"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="1*"/>
+                            </Grid.ColumnDefinitions>
+                            <CheckBox IsChecked="{x:Bind Done,Mode=TwoWay}" Grid.Column="0" MinWidth="0" MinHeight="0" HorizontalAlignment="Center"/>
+                            <Image x:Name="CoverSmallImage" Source="{x:Bind CoverSource,Mode=OneWay}" Grid.Column="1" Width="84"/>
+                            <TextBlock Text="{x:Bind Title,Mode=OneWay}" Grid.Column="2" VerticalAlignment="Center" Margin="8,0"/>
+                            <Line Visibility="{x:Bind Done,Converter={StaticResource B2VConverter},Mode=OneWay}" Grid.Column="2" StrokeThickness="2" Stretch="Fill" VerticalAlignment="Center" Stroke="Black" X2="1" Margin="8,0"/>
+                        </Grid>
+                    </UserControl>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </Grid>
 </Page>

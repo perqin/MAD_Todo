@@ -35,7 +35,7 @@ namespace MAD_Todo {
         }
 
         /// <summary>
-        /// Change editing todo data without changing ID
+        /// Change editing todo data without init it
         /// </summary>
         /// <param name="todo"></param>
         public void ChangeEditingTodoData(Todo todo) {
