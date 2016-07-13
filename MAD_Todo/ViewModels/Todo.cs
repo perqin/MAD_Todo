@@ -162,8 +162,10 @@ namespace MAD_Todo.ViewModels {
             }
         }
 
-        public void CloneFrom(Todo copy) {
-            ID = copy.ID;
+        public void CloneFrom(Todo copy, bool copyID = true) {
+            if (copyID) {
+                ID = copy.ID;
+            }
             Title = copy.Title;
             Detail = copy.Detail;
             DueDate = copy.DueDate;
@@ -252,14 +254,14 @@ namespace MAD_Todo.ViewModels {
         }
 
         public void UpdateTodo(int index, Todo todo) {
-            string oid = Todos[index].ID;
-            Todos[index].CloneFrom(todo);
+            //string oid = Todos[index].ID;
+            Todos[index].CloneFrom(todo, false);
             using (var connection = new SQLiteConnection(new SQLite.Net.Platform.WinRT.SQLitePlatformWinRT(), C.DB_PATH)) {
                 var cmd = connection.CreateCommand($"SELECT name FROM sqlite_master WHERE type='table' AND name='{typeof(Todo).Name}'");
                 if (cmd.ExecuteScalar<string>() == null) {
                     connection.CreateTable<Todo>(SQLite.Net.Interop.CreateFlags.None);
                 }
-                int count = connection.Update(todo, typeof(Todo));
+                int count = connection.Update(Todos[index], typeof(Todo));
             }
         }
 

@@ -39,12 +39,23 @@ namespace MAD_Todo.Utils
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {
-            return (DateTimeOffset)((value as DateTime?) ?? DateTime.Today);
+            //TODO: FIXME: Convert make crash
+            DateTime dt = (value as DateTime?) ?? DateTime.Today;
+            DateTimeOffset dto = new DateTimeOffset(dt.Year, dt.Month, dt.Day, 0, 0, 0, new TimeSpan(8, 0, 0));
+            return dto;
+            //DateTime dt = (value as DateTime?) ?? DateTime.Today;
+            //return (DateTimeOffset)dt;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, string language)
         {
-            return ((value as DateTimeOffset?) ?? DateTimeOffset.Now).DateTime;
+            //TODO: FIXME: Convert make crash
+            DateTimeOffset dto = (value as DateTimeOffset?) ?? DateTimeOffset.Now;
+            DateTime dt = dto.Date;
+            return new DateTime(dt.Year, dt.Month, dt.Day, 0, 0, 0);
+            //return DateTime.Today;
+            //DateTimeOffset dto = ((value as DateTimeOffset?) ?? DateTimeOffset.Now);
+            //return dto.DateTime;
         }
     }
 

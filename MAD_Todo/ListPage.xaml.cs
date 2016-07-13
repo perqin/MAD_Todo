@@ -47,8 +47,6 @@ namespace MAD_Todo {
                     resultStringBuilder.Append("; due_date: ").Append(r.DB_DueDate);
                     resultStringBuilder.Append("; done: ").Append(r.Done.ToString()).Append('\n');
                 }
-                //DEBUG
-                resultStringBuilder.Append(sb.ToString());
                 MessageDialog dialog = new MessageDialog(resultStringBuilder.ToString());
                 dialog.Commands.Add(new UICommand("OK"));
                 await dialog.ShowAsync();
